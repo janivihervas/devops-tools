@@ -1,18 +1,18 @@
 version: 2
 
 references:
+  pwd: &pwd
+    /go/src/github.com/janivihervas/devops-tools
   env: &env
     docker:
       - image: circleci/golang:1.8.3
-    working_directory: /go/src/github.com/janivihervas/devops-tools
+    working_directory: *pwd
 
-  workspace_root: &workspace_root
-    /tmp/workspace
-
-  attach_workspace: &attach_workspace
-      attach_workspace:
-        at: *workspace_root
-
+  repo_files: &repo_files
+    - run: echo $CIRCLE_SHA1 > .circle-sha
+    - restore_cache:
+        keys:
+          - v1-repo-{{ checksum ".circle-sha" }}
 jobs:
   install:
     <<: *env
@@ -20,32 +20,35 @@ jobs:
       - checkout
       - run: make install-vendor
       - run: make install-tools
-      - persist_to_workspace:
-          paths: *workspace_root
+      - run: echo $CIRCLE_SHA1 > .circle-sha
+      - save_cache:
+          key: v1-repo-{{ checksum ".circle-sha" }}
+          paths:
+            - ~/circleci-demo-workflows
   lint:
     <<: *env
-    <<: *attach_workspace
+    <<: *repo_files
     steps:
       - run: pwd
       - run: ls -la
       - run: make lint
   test:
     <<: *env
-    <<: *attach_workspace
+    <<: *repo_files
     steps:
       - run: pwd
       - run: ls -la
       - run: make test
   build-foo:
     <<: *env
-    <<: *attach_workspace
+    <<: *repo_files
     steps:
       - run: pwd
       - run: ls -la
       - run: make build-foo
   build-bar:
     <<: *env
-    <<: *attach_workspace
+    <<: *repo_files
     steps:
       - run: pwd
       - run: ls -la
