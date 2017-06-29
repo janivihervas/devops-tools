@@ -24,7 +24,6 @@ jobs:
     steps:
       - checkout
       - run: make install-vendor
-      - run: make install-tools
       - run: |
             mkdir -p /tmp/workspace
             mv * .[!.]* /tmp/workspace/
@@ -37,6 +36,7 @@ jobs:
     steps:
       - *attach_workspace
       - *copy_workspace
+      - run: make install-tools
       - run: make lint
   test:
     <<: *env
