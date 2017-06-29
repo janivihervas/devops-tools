@@ -1,9 +1,17 @@
 version: 2
 
-defaults: &env
-  docker:
-    - image: circleci/golang:1.8.3
-  working_directory: /go/src/github.com/janivihervas/devops-tools
+references:
+  env: &env
+    docker:
+      - image: circleci/golang:1.8.3
+    working_directory: /go/src/github.com/janivihervas/devops-tools
+
+  workspace_root: &workspace_root
+    /tmp/workspace
+
+  attach_workspace: &attach_workspace
+      attach_workspace:
+        at: *workspace_root
 
 jobs:
   install:
@@ -12,26 +20,32 @@ jobs:
       - checkout
       - run: make install-vendor
       - run: make install-tools
+      - persist_to_workspace:
+          paths: *workspace_root
   lint:
     <<: *env
+    <<: *attach_workspace
     steps:
       - run: pwd
       - run: ls -la
       - run: make lint
   test:
     <<: *env
+    <<: *attach_workspace
     steps:
       - run: pwd
       - run: ls -la
       - run: make test
   build-foo:
     <<: *env
+    <<: *attach_workspace
     steps:
       - run: pwd
       - run: ls -la
       - run: make build-foo
   build-bar:
     <<: *env
+    <<: *attach_workspace
     steps:
       - run: pwd
       - run: ls -la
