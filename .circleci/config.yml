@@ -15,18 +15,26 @@ jobs:
   lint:
     <<: *env
     steps:
+      - run: pwd
+      - run: ls -la
       - run: make lint
   test:
     <<: *env
     steps:
+      - run: pwd
+      - run: ls -la
       - run: make test
   build-foo:
     <<: *env
     steps:
+      - run: pwd
+      - run: ls -la
       - run: make build-foo
   build-bar:
     <<: *env
     steps:
+      - run: pwd
+      - run: ls -la
       - run: make build-bar
 
 workflows:
