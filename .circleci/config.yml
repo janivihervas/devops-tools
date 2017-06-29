@@ -1,12 +1,12 @@
 version: 2
 
-references:
-  pwd: &pwd
-    /go/src/github.com/janivihervas/devops-tools
-  env: &env
-    docker:
-      - image: circleci/golang:1.8.3
-    working_directory: *pwd
+pwd: &pwd
+  /go/src/github.com/janivihervas/devops-tools
+
+env: &env
+  docker:
+    - image: circleci/golang:1.8.3
+  working_directory: *pwd
 
 jobs:
   install:
