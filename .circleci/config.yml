@@ -34,8 +34,10 @@ jobs:
     <<: *env
     steps:
       - *attach_workspace
+      - run: ls -la
+      - run: ls -la /tmp
+      - run: ls -la /tmp/workspace
       - *load_code
-      - run: pwd
       - run: ls -la
       - run: make lint
   test:
