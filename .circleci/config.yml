@@ -27,9 +27,8 @@ jobs:
             mkdir -p /tmp/workspace
             mv * .[!.]* /tmp/workspace/
       - persist_to_workspace:
-          root: /tmp
           paths:
-            - workspace
+            - /tmp/workspace/
   lint:
     <<: *env
     steps:
@@ -37,6 +36,7 @@ jobs:
       - run: ls -la
       - run: ls -la /tmp
       - run: ls -la /tmp/workspace
+      - run: ls -la /tmp/workspace/workspace
       - *load_code
       - run: ls -la
       - run: make lint
