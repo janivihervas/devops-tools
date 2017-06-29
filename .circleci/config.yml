@@ -1,15 +1,37 @@
 version: 2
 jobs:
-  build:
+  install:
     docker:
       - image: circleci/golang:1.8.3
     working_directory: /go/src/github.com/janivihervas/devops-tools
     steps:
       - checkout
-      - run: printenv
       - run: make install-vendor
       - run: make install-tools
+  lint:
       - run: make lint
+  test:
       - run: make test
+  build-foo:
       - run: make build-foo
+  build-bar:
       - run: make build-bar
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - test:
+          requires:
+            - install
+      - build-foo:
+          requires:
+            - lint
+            - test
+      - build-bar:
+          requires:
+            - lint
+            - test
