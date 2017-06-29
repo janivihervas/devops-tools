@@ -15,12 +15,20 @@ func TestLogger_LogInfo(t *testing.T) {
 	l := &Logger{}
 
 	l.LogInfo("test")
+	err := w.Flush()
+	if err != nil {
+		t.Error(err)
+	}
 	expected := "[INFO] test"
 	if !strings.Contains(buf.String(), expected) {
 		t.Errorf("Expected %s to include %s", buf.String(), expected)
 	}
 
 	l.LogInfo("test", "multiple")
+	err = w.Flush()
+	if err != nil {
+		t.Error(err)
+	}
 	expected = "[INFO] test multiple"
 	if !strings.Contains(buf.String(), expected) {
 		t.Errorf("Expected %s to include %s", buf.String(), expected)
