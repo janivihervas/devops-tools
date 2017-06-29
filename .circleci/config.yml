@@ -8,11 +8,6 @@ references:
       - image: circleci/golang:1.8.3
     working_directory: *pwd
 
-  repo_files: &repo_files
-    - run: echo $CIRCLE_SHA1 > .circle-sha
-    - restore_cache:
-        keys:
-          - v1-repo-{{ checksum ".circle-sha" }}
 jobs:
   install:
     <<: *env
@@ -24,31 +19,43 @@ jobs:
       - save_cache:
           key: v1-repo-{{ checksum ".circle-sha" }}
           paths:
-            - ~/circleci-demo-workflows
+            - *pwd
   lint:
     <<: *env
-    <<: *repo_files
+    - run: echo $CIRCLE_SHA1 > .circle-sha
+    - restore_cache:
+        keys:
+          - v1-repo-{{ checksum ".circle-sha" }}
     steps:
       - run: pwd
       - run: ls -la
       - run: make lint
   test:
     <<: *env
-    <<: *repo_files
+    - run: echo $CIRCLE_SHA1 > .circle-sha
+    - restore_cache:
+        keys:
+          - v1-repo-{{ checksum ".circle-sha" }}
     steps:
       - run: pwd
       - run: ls -la
       - run: make test
   build-foo:
     <<: *env
-    <<: *repo_files
+    - run: echo $CIRCLE_SHA1 > .circle-sha
+    - restore_cache:
+        keys:
+          - v1-repo-{{ checksum ".circle-sha" }}
     steps:
       - run: pwd
       - run: ls -la
       - run: make build-foo
   build-bar:
     <<: *env
-    <<: *repo_files
+    - run: echo $CIRCLE_SHA1 > .circle-sha
+    - restore_cache:
+        keys:
+          - v1-repo-{{ checksum ".circle-sha" }}
     steps:
       - run: pwd
       - run: ls -la
