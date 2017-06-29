@@ -1,12 +1,20 @@
 version: 2
 
-pwd: &pwd
-  /go/src/github.com/janivihervas/devops-tools
+references:
+  pwd: &pwd
+    /go/src/github.com/janivihervas/devops-tools
 
-env: &env
-  docker:
-    - image: circleci/golang:1.8.3
-  working_directory: *pwd
+  env: &env
+    docker:
+      - image: circleci/golang:1.8.3
+    working_directory: *pwd
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: /tmp/workspace
+
+  load_code: &load_code
+    run: mv /tmp/workspace/* /tmp/workspace/.[!.]* .
 
 jobs:
   install:
@@ -15,48 +23,42 @@ jobs:
       - checkout
       - run: make install-vendor
       - run: make install-tools
-      - run: echo $CIRCLE_SHA1 > .circle-sha
-      - save_cache:
-          key: v1-repo-{{ checksum ".circle-sha" }}
+      - run: |
+            mkdir -p /tmp/workspace
+            mv * .[!.]* /tmp/workspace/
+      - persist_to_workspace:
+          root: *workspace_root
           paths:
             - *pwd
   lint:
     <<: *env
-    - run: echo $CIRCLE_SHA1 > .circle-sha
-    - restore_cache:
-        keys:
-          - v1-repo-{{ checksum ".circle-sha" }}
     steps:
+      - *attach_workspace
+      - *load_code
       - run: pwd
       - run: ls -la
       - run: make lint
   test:
     <<: *env
-    - run: echo $CIRCLE_SHA1 > .circle-sha
-    - restore_cache:
-        keys:
-          - v1-repo-{{ checksum ".circle-sha" }}
     steps:
+      - *attach_workspace
+      - *load_code
       - run: pwd
       - run: ls -la
       - run: make test
   build-foo:
     <<: *env
-    - run: echo $CIRCLE_SHA1 > .circle-sha
-    - restore_cache:
-        keys:
-          - v1-repo-{{ checksum ".circle-sha" }}
     steps:
+      - *attach_workspace
+      - *load_code
       - run: pwd
       - run: ls -la
       - run: make build-foo
   build-bar:
     <<: *env
-    - run: echo $CIRCLE_SHA1 > .circle-sha
-    - restore_cache:
-        keys:
-          - v1-repo-{{ checksum ".circle-sha" }}
     steps:
+      - *attach_workspace
+      - *load_code
       - run: pwd
       - run: ls -la
       - run: make build-bar
