@@ -1,0 +1,6 @@
+[submodule "vendor/github.com/pkg/errors"]
+	path = vendor/github.com/pkg/errors
+	url = https://github.com/pkg/errors.git
+[submodule "vendor/github.com/satori/go.uuid"]
+	path = vendor/github.com/satori/go.uuid
+	url = https://github.com/satori/go.uuid.git
