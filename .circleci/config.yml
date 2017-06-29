@@ -27,7 +27,7 @@ jobs:
             mkdir -p /tmp/workspace
             mv * .[!.]* /tmp/workspace/
       - persist_to_workspace:
-          root: *workspace_root
+          root: /tmp/workspace
           paths:
             - *pwd
   lint:
