@@ -13,8 +13,10 @@ references:
     attach_workspace:
       at: /tmp
 
-  load_code: &load_code
-    run: mv /tmp/workspace/* /tmp/workspace/.[!.]* .
+  copy_workspace: &copy_workspace
+    run:
+      name: Copy workspace
+      command: mv /tmp/workspace/* /tmp/workspace/.[!.]* .
 
 jobs:
   install:
@@ -34,36 +36,25 @@ jobs:
     <<: *env
     steps:
       - *attach_workspace
-      - run: ls -la
-      - run: ls -la /tmp
-      - run: ls -la /tmp/workspace
-      - run: ls -la /tmp/workspace/workspace
-      - *load_code
-      - run: ls -la
+      - *copy_workspace
       - run: make lint
   test:
     <<: *env
     steps:
       - *attach_workspace
-      - *load_code
-      - run: pwd
-      - run: ls -la
+      - *copy_workspace
       - run: make test
   build-foo:
     <<: *env
     steps:
       - *attach_workspace
-      - *load_code
-      - run: pwd
-      - run: ls -la
+      - *copy_workspace
       - run: make build-foo
   build-bar:
     <<: *env
     steps:
       - *attach_workspace
-      - *load_code
-      - run: pwd
-      - run: ls -la
+      - *copy_workspace
       - run: make build-bar
 
 workflows:
