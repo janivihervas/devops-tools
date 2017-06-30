@@ -4,6 +4,8 @@ GO_TOOLS := github.com/golang/lint/golint \
 			github.com/kisielk/errcheck \
 			golang.org/x/tools/cmd/goimports
 
+default: lint test build-foo build-bar
+
 install-vendor:
 	git submodule update --init
 
