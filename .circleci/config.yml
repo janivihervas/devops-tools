@@ -13,7 +13,7 @@ jobs:
 #      - run: make test
 #      - run: make build-foo
 #      - run: make build-bar
-      - run: GOOS=linux GOARCH=amd64 go build -o server github.com/janivihervas/devops-tools/cmd/bar
+      - run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o server github.com/janivihervas/devops-tools/cmd/bar
       - setup_remote_docker:
           version: 17.06.0-ce
       - run:
