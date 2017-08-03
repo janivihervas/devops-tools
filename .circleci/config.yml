@@ -6,10 +6,31 @@ jobs:
     working_directory: /go/src/github.com/janivihervas/devops-tools
     steps:
       - checkout
-      - run: printenv
+#      - run: printenv
       - run: make install-vendor
-      - run: make install-tools
-      - run: make lint
-      - run: make test
-      - run: make build-foo
-      - run: make build-bar
+#      - run: make install-tools
+#      - run: make lint
+#      - run: make test
+#      - run: make build-foo
+#      - run: make build-bar
+      - run: GOOS=linux GOARCH=amd64 go build -o server github.com/janivihervas/devops-tools/cmd/bar
+      - setup_remote_docker:
+          version: 17.06.0-ce
+      - run:
+          name: docker build
+          command: |
+            docker build -t bar:$CIRCLE_SHA1 -f bar/Dockerfile .
+      - run:
+          name: docker run
+          command: |
+            docker run \
+              -d \
+              --name bar \
+              -p 3000:3000 \
+              bar:$CIRCLE_SHA1
+
+            sleep 5
+
+            docker ps
+            docker logs bar
+      - run: curl http://localhost:3000
