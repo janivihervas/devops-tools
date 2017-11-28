@@ -23,4 +23,15 @@ jobs:
             - vendor
       - run: make install-tools
       - run: make lint
-      - run: make test
+      - run:
+          name: Test
+          command: |
+            echo "" > coverage.txt
+            rm -rf coverage
+            mkdir coverage
+            parallel -k 'go test -race -coverprofile=coverage/{#}.out -covermode=atomic {}' ::: $(go list ./...)
+            find coverage/* -exec cat {} >> coverage.txt \;
+            rm -rf coverage
+      - run:
+          name: Upload coverage to codecov.io
+          command: bash <(curl -s https://codecov.io/bash)

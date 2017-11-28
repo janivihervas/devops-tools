@@ -13,8 +13,8 @@ install-tools:
 	go get -u $(GO_TOOLS)
 
 lint:
-	go vet -v $(GO_PACKAGES) && golint -set_exit_status $(GO_PACKAGES) && errcheck -ignoretests $(GO_PACKAGES)
+	go vet ./... && golint -set_exit_status $(GO_PACKAGES) && errcheck -ignoretests ./...
 
 test:
-	go test -race $(GO_PACKAGES)
+	go test -race -cover ./...
 
