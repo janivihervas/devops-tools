@@ -2,14 +2,25 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.8.3
+      - image: circleci/golang:1.9.1
     working_directory: /go/src/github.com/janivihervas/devops-tools
+    environment:
+      - DEP_VERSION: 0.3.2
     steps:
       - checkout
-      - run: printenv
-      - run: make install-vendor
+      - run:
+          name: Install dep
+          command: |
+            curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
+            chmod +x $GOPATH/bin/dep
+      - restore_cache:
+          keys:
+            - v1-deps-{{ arch }}-{{ checksum "Gopkg.lock" }}
+      - run: make install
+      - save_cache:
+          key: v1-deps-{{ arch }}-{{ checksum "Gopkg.lock" }}
+          paths:
+            - vendor
       - run: make install-tools
       - run: make lint
       - run: make test
-      - run: make build-foo
-      - run: make build-bar
